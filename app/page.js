@@ -310,8 +310,45 @@ export default function Home() {
       } else if (lowerText.includes('area') || lowerText.includes('where') || lowerText.includes('hyderabad') || lowerText.includes('location')) {
         aiResponse = `### 📍 Hyderabad Delivery Areas Covered!\n\nThemeCraft Celebrations plans events all over Hyderabad! Our main service areas include:\n\n* **Jubilee Hills & Banjara Hills**\n* **Gachibowli, Kondapur, & Madhapur** (Hitech City area)\n* **Begumpet, Secunderabad, & Kukatpally**\n\n*Note: Setup takes about 3 hours, and our planners ensure a pristine, clean, and hassle-free cleanup afterward!*`;
       } else {
-        // Generative Default Response tailored to birthdays and standard events
-        aiResponse = `### 🌟 Customized Event Blueprint Generated!\n\nBased on your message, I have drafted a custom plan:\n\n* **Design Concept**: Modern organic balloon decoration arch mixed with customized circular backdrops.\n* **Vibe Styling**: Customized pastel palettes, glowing marquee lighting, and custom name signs.\n* **Stall Suggestion**: We recommend adding **Tattoo Art (₹2,500)** and a **Chocolate Fountain (₹4,000)** to delight your guests!\n* **Suggested Tier**: **Theme Party Package (₹19,999)**.\n\n*Our active AI Event Planner has logged your preferences. Click the button below to instantly book or custom-discuss this setup with Ashish!*`;
+        const concepts = [
+          "Modern organic balloon cascade wrapped around a round mesh backdrop panel",
+          "Double-stuffed pastel peach and chrome gold balloon pillars with custom neon name boards",
+          "A retro glowing neon sign backed by dense green foliage panels and helium arches",
+          "A multi-layered circular backdrop themed with high-quality custom card models",
+          "Glittering sequin backdrop wall with a premium organic balloon arch framing"
+        ];
+        const stylings = [
+          "Custom pastel palettes, slow-pulsing marquee letter lights, and designer cake tables",
+          "Vibrant forest green and olive balloons with warm metallic spotlights and rustic centerpieces",
+          "Metallic silver chrome balloons, starry LED spheres, and deep navy velvet curtains",
+          "Soft baby pink and sky blue balloons with drifting foam clouds and golden crown badges",
+          "Sunset gold chrome accents, warm lantern clusters, and boho rug seating"
+        ];
+        const stalls = [
+          "Bouncy Castle (₹4,500) and Popcorn Stall (₹3,000)",
+          "Live Balloon Twisting (₹2,500) and Face Painting (₹2,000)",
+          "Magic Show & Emcee Host (₹4,500) and Chocolate Fountain (₹4,000)",
+          "Tattoo Art (₹2,500) and Cotton Candy Stall (₹3,000)",
+          "Popcorn Stall (₹3,000) and Cotton Candy Live Stall (₹3,000)"
+        ];
+        const tiers = [
+          "Starter Party (₹9,999)",
+          "Theme Party Package (₹19,999)",
+          "Premium Celebration (₹34,999)"
+        ];
+
+        let hash = 0;
+        for (let i = 0; i < text.length; i++) {
+          hash = text.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        const selectIdx = (arr) => arr[Math.abs(hash) % arr.length];
+        
+        const concept = selectIdx(concepts);
+        const styling = selectIdx(stylings);
+        const stall = selectIdx(stalls);
+        const tier = selectIdx(tiers);
+
+        aiResponse = `### 🌟 Customized Event Blueprint Generated!\n\nBased on your unique request, I have custom-compiled a personal blueprint:\n\n* **Design Concept**: ${concept}.\n* **Vibe Styling**: ${styling}.\n* **Stall Suggestion**: We highly recommend adding **${stall}** to delight your guests!\n* **Suggested Tier**: **${tier}**.\n\n*Our generative AI Planner has logged your custom preferences. Click the button below to instantly book or custom-discuss this setup with Ashish!*`;
       }
 
       setChatMessages(prev => [...prev, {
