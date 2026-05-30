@@ -92,8 +92,8 @@ const VCLogo = (props) => (
   </svg>
 );
 
-const WHATSAPP_NUMBER = "918520973295";
-const WHATSAPP_DISPLAY = "+91 85209 73295";
+const WHATSAPP_NUMBER = "919959512223";
+const WHATSAPP_DISPLAY = "+91 99595 12223";
 const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=Hi%20ThemeCraft%20Celebrations!%20I%20am%20planning%20a%20magical%20celebration%20in%20Hyderabad.%20Please%20send%20details.`;
 
 // Framer Motion variants for friendly staggered entrances
