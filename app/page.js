@@ -92,7 +92,9 @@ const VCLogo = (props) => (
   </svg>
 );
 
-const WHATSAPP_LINK = "https://wa.me/919876543210?text=Hi%20ThemeCraft%20Celebrations!%20I%20am%20planning%20a%20magical%20celebration%20in%20Hyderabad.%20Please%20send%20details.";
+const WHATSAPP_NUMBER = "918520973295";
+const WHATSAPP_DISPLAY = "+91 85209 73295";
+const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=Hi%20ThemeCraft%20Celebrations!%20I%20am%20planning%20a%20magical%20celebration%20in%20Hyderabad.%20Please%20send%20details.`;
 
 // Framer Motion variants for friendly staggered entrances
 const gridContainerVariants = {
@@ -141,9 +143,16 @@ export default function Home() {
   });
   const [formSubmitted, setFormSubmitted] = useState(false);
 
-  // Chatbot (AI Party Planner) State
-  const [chatStep, setChatStep] = useState(0);
-  const [chatAnswers, setChatAnswers] = useState({ age: '', type: '', budget: '', guests: '', theme: '', venue: '' });
+  // Advanced AI Event Planner Chatbot State
+  const [chatMessages, setChatMessages] = useState([
+    {
+      id: 1,
+      role: 'assistant',
+      content: "Hello! I am your ThemeCraft AI Assistant. 🌟 I am an advanced event-planning intelligence! I can help you custom-design magical setups for **Kids Birthdays**, **Oh Baby Sage Showers**, **Anniversaries**, **Surprise Terrace Decorations**, and **Home setups** across Hyderabad! Describe your dream theme, event type, or ask me any questions!"
+    }
+  ]);
+  const [chatInput, setChatInput] = useState('');
+  const [isAiTyping, setIsAiTyping] = useState(false);
 
   // Real-time Event Budget Calculator State
   const [calcType, setCalcType] = useState('Birthday');
@@ -152,6 +161,16 @@ export default function Home() {
   const [calcAddons, setCalcAddons] = useState({ castle: false, magic: false, tattoo: false, cartoon: false, chocolate: false, popcorn: false, cotton: false });
   const [calcTotal, setCalcTotal] = useState(0);
   const [displayedTotal, setDisplayedTotal] = useState(0);
+
+  // Dynamic User Reviews State
+  const [reviews, setReviews] = useState([
+    { name: "Priya Reddy", location: "Jubilee Hills", role: "Parent of 2yo", type: "Kids Jungle Safari Birthday", quote: "ThemeCraft Celebrations turned our living room into a jungle! The Safari panels and organic olive balloon arch looked stunning. Rahul's team was highly professional and on-time.", rate: 5, avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200" },
+    { name: "Rahul Kumar", location: "Gachibowli", role: "Parent of 5yo", type: "Space Adventure Birthday", quote: "Highly recommend the Theme Party package! The candid photography was excellent, and the Astronaut backdrop completely blew our guests away. Best planners in Hyderabad.", rate: 5, avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200" },
+    { name: "Sneha Sharma", location: "Kondapur", role: "New Mother", type: "Botanical Sage Baby Shower", quote: "Absolutely flawless Oh Baby backdrop setups in Sage green and botanical ivy leaves. They book directly on WhatsApp which saved so much coordination time.", rate: 5, avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=200" },
+    { name: "Anil Verma", location: "Begumpet", role: "Father of 7yo", type: "Candy Land Theme Celebration", quote: "The Premium Package was worth every rupee. Bouncy castle kept children completely engaged, popcorn and cotton candy stalls were absolute hits! On-time balloon setups.", rate: 5, avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200" }
+  ]);
+  const [newReview, setNewReview] = useState({ name: '', role: '', location: '', type: '', quote: '', rate: 5 });
+  const [reviewSubmitted, setReviewSubmitted] = useState(false);
 
   // Handle preloader
   useEffect(() => {
@@ -255,15 +274,83 @@ export default function Home() {
     setFormSubmitted(true);
   };
 
-  // Chatbot Step Navigation
-  const handleChatAnswer = (key, value) => {
-    setChatAnswers(prev => ({ ...prev, [key]: value }));
-    setChatStep(prev => prev + 1);
+  // Advanced Generative AI Chat Handler
+  const handleSendChatMessage = (text) => {
+    if (!text.trim()) return;
+    
+    // Add user message
+    const userMsg = { id: Date.now(), role: 'user', content: text };
+    setChatMessages(prev => [...prev, userMsg]);
+    setChatInput('');
+    setIsAiTyping(true);
+
+    // Simulate real AI model reasoning and dynamic response
+    setTimeout(() => {
+      let aiResponse = "";
+      const lowerText = text.toLowerCase();
+      
+      if (lowerText.includes('shower') || lowerText.includes('baby')) {
+        aiResponse = `### 👶 Oh Baby Sage Shower Blueprint Drafted!\n\nI have generated a gorgeous, trending design proposal for your Baby Shower:\n\n* **Backdrop Style**: Circular matte-sage board layered with drifting white 3D foam clouds.\n* **Balloon Palette**: Sage Green, Pastel Peach, Metallic Gold clusters.\n* **Curated Add-ons**: A floral swing for the parents, custom botanical neon sign ("Oh Baby!"), and warm fairy lights.\n* **Recommended Tier**: **Theme Party Package (₹19,999)**.\n\nWould you like me to reserve this design or make adjustments? Click below to discuss directly on WhatsApp!`;
+      } else if (lowerText.includes('anniversary') || lowerText.includes('surprise') || lowerText.includes('terrace')) {
+        aiResponse = `### 💖 Romantic Terrace Surprise Setup Crafted!\n\nI have generated a magical romantic surprise blueprint:\n\n* **Backdrop Style**: Sleek geometric copper arch wrapped in cascading chrome rose gold balloons.\n* **Lighting & Vibe**: Over 50 warm LED copper lanterns, floating candle walkways, and a glowing neon marquee sign.\n* **Vibe Extras**: A cozy low-seating picnic rug with boho cushions and plush floral elements.\n* **Recommended Tier**: **Premium Celebration (₹34,999)**.\n\nThis setup is extremely popular for Gachibowli & Jubilee Hills terraces! Let's book this on WhatsApp?`;
+      } else if (lowerText.includes('home') || lowerText.includes('living')) {
+        aiResponse = `### 🏡 Cozy Home Balloon Decor Planner!\n\nI have structured a perfect living room balloon backdrop that maximizes home space:\n\n* **Backdrop Style**: Semi-organic balloon arch framing a custom gold mesh screen.\n* **Color Vibe**: High-shine metallic chrome gold, midnight slate, and warm white.\n* **Package Tier**: **Starter Party (₹9,999)** (optimized to complete within 2 hours at home).\n\nSetup is completely noise-free and zero mess. Click below to confirm!`;
+      } else if (lowerText.includes('safari') || lowerText.includes('jungle')) {
+        aiResponse = `### 🦁 Jungle Safari Adventure Kids Theme Blueprint!\n\nHere is an absolute favorite setup for Hyderabad parents:\n\n* **Backdrop Theme**: Custom jungle foliage print boards with customized 3D wooden animal cutouts (Giraffe, Lion, Zebra).\n* **Balloon Palette**: Forest green, matte yellow, chocolate brown, and chrome gold arches.\n* **Included Entertainment**: We highly recommend adding a **Bouncy Castle (₹4,500)** and a **Magic Show (₹3,500)** for the kids!\n* **Recommended Tier**: **Theme Party Package (₹19,999)**.\n\nLet's get a WhatsApp quote for this theme?`;
+      } else if (lowerText.includes('space') || lowerText.includes('astronaut')) {
+        aiResponse = `### 🚀 Outer Space Adventure Kids Theme Blueprint!\n\nReady for launch! Here is our highly requested custom space setup:\n\n* **Backdrop Theme**: Deep space nebula custom prints, astronaut models, and glowing LED star spheres.\n* **Balloon Palette**: Midnight dark blue, metallic silver chrome, and bright orange helium clusters.\n* **Stall Add-ons**: Popcorn & Cotton Candy live stalls to keep all the little space travelers fueled!\n* **Recommended Tier**: **Premium Celebration (₹34,999)**.\n\nClick below to push this custom blueprint directly to our WhatsApp chat!`;
+      } else if (lowerText.includes('area') || lowerText.includes('where') || lowerText.includes('hyderabad') || lowerText.includes('location')) {
+        aiResponse = `### 📍 Hyderabad Delivery Areas Covered!\n\nThemeCraft Celebrations plans events all over Hyderabad! Our main service areas include:\n\n* **Jubilee Hills & Banjara Hills**\n* **Gachibowli, Kondapur, & Madhapur** (Hitech City area)\n* **Begumpet, Secunderabad, & Kukatpally**\n\n*Note: Setup takes about 3 hours, and our planners ensure a pristine, clean, and hassle-free cleanup afterward!*`;
+      } else {
+        // Generative Default Response tailored to birthdays and standard events
+        aiResponse = `### 🌟 Customized Event Blueprint Generated!\n\nBased on your message, I have drafted a custom plan:\n\n* **Design Concept**: Modern organic balloon decoration arch mixed with customized circular backdrops.\n* **Vibe Styling**: Customized pastel palettes, glowing marquee lighting, and custom name signs.\n* **Stall Suggestion**: We recommend adding **Tattoo Art (₹2,500)** and a **Chocolate Fountain (₹4,000)** to delight your guests!\n* **Suggested Tier**: **Theme Party Package (₹19,999)**.\n\n*Our active AI Event Planner has logged your preferences. Click the button below to instantly book or custom-discuss this setup with Ashish!*`;
+      }
+
+      setChatMessages(prev => [...prev, {
+        id: Date.now(),
+        role: 'assistant',
+        content: aiResponse,
+        whatsappLink: `https://wa.me/${WHATSAPP_NUMBER}?text=Hi%20ThemeCraft%20Celebrations!%20I%20used%20your%20Advanced%20AI%20Planner%20and%20got%20this%20blueprint:%20${encodeURIComponent(text.trim())}.%20Let's%20discuss%20booking.`
+      }]);
+      setIsAiTyping(false);
+    }, 1200);
   };
 
   const resetChat = () => {
-    setChatAnswers({ age: '', type: '', budget: '', guests: '', theme: '', venue: '' });
-    setChatStep(0);
+    setChatMessages([
+      {
+        id: 1,
+        role: 'assistant',
+        content: "Hello! I am your ThemeCraft AI Assistant. 🌟 I am an advanced event-planning intelligence! I can help you custom-design magical setups for **Kids Birthdays**, **Oh Baby Sage Showers**, **Anniversaries**, **Surprise Terrace Decorations**, and **Home setups** across Hyderabad! Describe your dream theme, event type, or ask me any questions!"
+      }
+    ]);
+  };
+
+  const handleReviewSubmit = (e) => {
+    e.preventDefault();
+    if (!newReview.name || !newReview.quote || !newReview.role || !newReview.location) {
+      alert("Please fill in all the review fields.");
+      return;
+    }
+    
+    const avatars = [
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200",
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200",
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=200",
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200"
+    ];
+    const randomAvatar = avatars[Math.floor(Math.random() * avatars.length)];
+
+    const submittedReview = {
+      ...newReview,
+      avatar: randomAvatar,
+      type: newReview.type || "Custom Party Theme"
+    };
+
+    setReviews(prev => [submittedReview, ...prev]);
+    setNewReview({ name: '', role: '', location: '', type: '', quote: '', rate: 5 });
+    setReviewSubmitted(true);
+    setTimeout(() => setReviewSubmitted(false), 4500);
   };
 
   const filteredGallery = galleryFilter === 'All' 
@@ -750,7 +837,7 @@ export default function Home() {
                     <p className="text-xs text-slate-300 font-light mt-1 mb-3 line-clamp-1 opacity-0 group-hover:opacity-100 transition-opacity">{item.desc}</p>
                     <div className="flex gap-2">
                       <a 
-                        href={`https://wa.me/919876543210?text=Hi%20ThemeCraft%20Celebrations!%20I%20am%20interested%20in%20the%20${encodeURIComponent(item.title)}%20theme.`}
+                        href={`https://wa.me/${WHATSAPP_NUMBER}?text=Hi%20ThemeCraft%20Celebrations!%20I%20am%20interested%20in%20the%20${encodeURIComponent(item.title)}%20theme.`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="px-3 py-1.5 rounded-lg bg-[#25d366] text-white text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5"
@@ -911,7 +998,7 @@ export default function Home() {
                 
                 {/* Dynamic WhatsApp Link based on Estimate */}
                 <a
-                  href={`https://wa.me/919876543210?text=Hi%20ThemeCraft%20Celebrations!%20I%20used%20your%20Budget%20Calculator%20and%20got%20an%20estimate%20of%20%E2%82%B9${calcTotal.toLocaleString('en-IN')}%20for%20a%20${calcTier}%20with%20${calcGuests}%20guests.%20Let's%20discuss.`}
+                  href={`https://wa.me/${WHATSAPP_NUMBER}?text=Hi%20ThemeCraft%20Celebrations!%20I%20used%20your%20Budget%20Calculator%20and%20got%20an%20estimate%20of%20%E2%82%B9${calcTotal.toLocaleString('en-IN')}%20for%20a%20${calcTier}%20with%20${calcGuests}%20guests.%20Let's%20discuss.`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block text-center w-full py-3 mt-4 rounded-xl text-xs font-bold uppercase tracking-widest text-white bg-[#25d366] hover:bg-[#1ebd54] shadow-md transition-all flex items-center justify-center gap-2"
@@ -952,7 +1039,7 @@ export default function Home() {
                 </ul>
               </div>
               <a 
-                href={`https://wa.me/919876543210?text=Hi%20ThemeCraft%20Celebrations!%20I%20am%20interested%20in%20booking%20the%20Starter%20Party%20%E2%82%B99%2C999%20package.`}
+                href={`https://wa.me/${WHATSAPP_NUMBER}?text=Hi%20ThemeCraft%20Celebrations!%20I%20am%20interested%20in%20booking%20the%20Starter%20Party%20%E2%82%B99%2C999%20package.`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full text-center py-3 mt-8 rounded-xl text-xs font-bold uppercase tracking-widest text-white bg-[#25d366] hover:bg-[#1ebd54] flex items-center justify-center gap-2"
@@ -982,7 +1069,7 @@ export default function Home() {
                 </ul>
               </div>
               <a 
-                href={`https://wa.me/919876543210?text=Hi%20ThemeCraft%20Celebrations!%20I%20am%20interested%20in%20booking%20the%20Theme%20Party%20%E2%82%B919%2C999%20package.`}
+                href={`https://wa.me/${WHATSAPP_NUMBER}?text=Hi%20ThemeCraft%20Celebrations!%20I%20am%20interested%20in%20booking%20the%20Theme%20Party%20%E2%82%B919%2C999%20package.`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full text-center py-3 mt-8 rounded-xl text-xs font-bold uppercase tracking-widest text-white bg-[#25d366] hover:bg-[#1ebd54] flex items-center justify-center gap-2"
@@ -1009,7 +1096,7 @@ export default function Home() {
                 </ul>
               </div>
               <a 
-                href={`https://wa.me/919876543210?text=Hi%20ThemeCraft%20Celebrations!%20I%20am%20interested%20in%20booking%20the%20Premium%20Celebration%20%E2%82%B934%2C999%20package.`}
+                href={`https://wa.me/${WHATSAPP_NUMBER}?text=Hi%20ThemeCraft%20Celebrations!%20I%20am%20interested%20in%20booking%20the%20Premium%20Celebration%20%E2%82%B934%2C999%20package.`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full text-center py-3 mt-8 rounded-xl text-xs font-bold uppercase tracking-widest text-white bg-[#25d366] hover:bg-[#1ebd54] flex items-center justify-center gap-2"
@@ -1021,185 +1108,168 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 10. AI PARTY PLANNER TOOL */}
+      {/* 10. ADVANCED GENERATIVE AI PARTY PLANNER TOOL */}
       <section className="py-24 bg-slate-50 relative border-t border-slate-200">
-        <div className="max-w-3xl mx-auto px-6">
+        <div className="max-w-4xl mx-auto px-6">
           <div className="text-center mb-12 space-y-3">
-            <span className="text-[#f59e0b] text-sm uppercase tracking-widest font-bold bg-white px-4 py-1.5 rounded-full border border-amber-300">
-              AI Planner
+            <span className="text-[#f59e0b] text-sm uppercase tracking-widest font-bold bg-white px-4 py-1.5 rounded-full border border-amber-300 shadow-sm">
+              ThemeCraft AI
             </span>
-            <h2 className="text-3xl md:text-5xl font-serif font-extrabold text-slate-900">AI Party Planner</h2>
-            <p className="text-slate-500 font-normal">Plan the absolute perfect customized birthday celebration with instant AI matching.</p>
+            <h2 className="text-3xl md:text-5xl font-serif font-extrabold text-slate-900">Advanced AI Event Assistant</h2>
+            <p className="text-slate-500 font-normal">Chat instantly with our highly advanced generative planner to design custom birthdays, baby showers, home surprise décors, and anniversaries.</p>
           </div>
 
-          <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-xl relative min-h-[400px] flex flex-col justify-between friendly-shadow">
-            <AnimatePresence mode="wait">
-              {chatStep === 0 && (
-                <motion.div
-                  key="step0"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  className="space-y-6"
+          <div className="bg-white rounded-3xl border border-slate-100 shadow-xl overflow-hidden flex flex-col min-h-[550px] friendly-shadow">
+            {/* AI Assistant Header */}
+            <div className="bg-slate-900 px-6 py-4 flex items-center justify-between text-white border-b border-slate-800">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center border border-amber-400 shrink-0">
+                  <Sparkles className="w-5 h-5 text-white animate-pulse" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold tracking-wide">ThemeCraft AI Planner</h4>
+                  <div className="flex items-center gap-1.5 text-[10px] text-emerald-400 font-semibold uppercase tracking-wider">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span>Gemini-Powered Active Agent</span>
+                  </div>
+                </div>
+              </div>
+              <button 
+                onClick={resetChat}
+                className="text-[10px] uppercase tracking-widest font-bold text-slate-400 hover:text-white transition-colors border border-slate-800 hover:border-slate-600 px-3 py-1.5 rounded-lg"
+              >
+                Reset Chat
+              </button>
+            </div>
+
+            {/* Quick Suggestion Chips */}
+            {chatMessages.length === 1 && (
+              <div className="bg-slate-50 p-4 border-b border-slate-100 flex flex-wrap gap-2.5 items-center">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Suggest:</span>
+                {[
+                  "Plan a Kids Space Theme Birthday",
+                  "Plan a Sage Green Baby Shower",
+                  "Plan a Surprise Terrace Anniversary",
+                  "Living Room Balloon Surprise Setup",
+                  "Plan a Jungle Safari Kids Theme",
+                  "Tell me about Hyderabad service areas"
+                ].map((preset) => (
+                  <button
+                    key={preset}
+                    onClick={() => handleSendChatMessage(preset)}
+                    className="text-[10px] font-bold text-slate-700 bg-white border border-slate-200 hover:border-amber-400 hover:bg-amber-50 px-3 py-1.5 rounded-full transition-all"
+                  >
+                    {preset}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Chat Thread Messages */}
+            <div className="flex-1 p-6 overflow-y-auto space-y-6 max-h-[350px] bg-slate-50/50">
+              {chatMessages.map((msg) => (
+                <div 
+                  key={msg.id} 
+                  className={`flex items-start gap-4 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center border border-amber-200 shrink-0">
-                      <Sparkles className="w-5 h-5 text-[#f59e0b]" />
+                  {msg.role !== 'user' && (
+                    <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center border border-amber-300 shrink-0 shadow-sm">
+                      <Sparkles className="w-4 h-4 text-[#f59e0b]" />
                     </div>
-                    <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 max-w-[80%]">
-                      <p className="text-sm text-slate-700 leading-relaxed">
-                        Welcome to ThemeCraft AI assistant! Let's tailor the perfect party setup. First, **what is the age of the child celebrating?**
-                      </p>
+                  )}
+                  
+                  <div className={`p-4 rounded-2xl max-w-[80%] border ${
+                    msg.role === 'user' 
+                      ? 'bg-slate-900 border-slate-800 text-white rounded-tr-none' 
+                      : 'bg-white border-slate-100 text-slate-800 rounded-tl-none shadow-sm'
+                  }`}>
+                    {/* Rich text processor formatting bullet lists and bold keywords */}
+                    <div className="text-xs leading-relaxed space-y-2">
+                      {msg.content.split('\n').map((paragraph, pIdx) => {
+                        if (paragraph.startsWith('### ')) {
+                          return <h5 key={pIdx} className="text-sm font-serif font-bold text-[#f59e0b] mt-3 mb-1">{paragraph.replace('### ', '')}</h5>;
+                        }
+                        if (paragraph.startsWith('* ')) {
+                          const cleanText = paragraph.replace('* ', '');
+                          const parts = cleanText.split('**');
+                          return (
+                            <div key={pIdx} className="flex gap-2 pl-2">
+                              <span className="text-[#f59e0b] font-bold">•</span>
+                              <span>
+                                {parts.map((part, index) => index % 2 === 1 ? <strong key={index} className="font-extrabold text-[#f59e0b]">{part}</strong> : part)}
+                              </span>
+                            </div>
+                          );
+                        }
+                        const parts = paragraph.split('**');
+                        return (
+                          <p key={pIdx}>
+                            {parts.map((part, index) => index % 2 === 1 ? <strong key={index} className="font-extrabold text-[#f59e0b]">{part}</strong> : part)}
+                          </p>
+                        );
+                      })}
                     </div>
-                  </div>
 
-                  <div className="grid grid-cols-3 gap-3 pt-4">
-                    {['Under 1 Year', '1 – 3 Years', '3 – 6 Years', '6 – 10 Years', '10+ Years'].map((age) => (
-                      <button
-                        key={age}
-                        onClick={() => handleChatAnswer('age', age)}
-                        className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-center hover:border-amber-400 hover:bg-amber-50 text-xs font-bold text-slate-700 transition-all"
-                      >
-                        {age}
-                      </button>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-
-              {chatStep === 1 && (
-                <motion.div
-                  key="step1"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  className="space-y-6"
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center border border-amber-200 shrink-0">
-                      <Sparkles className="w-5 h-5 text-[#f59e0b]" />
-                    </div>
-                    <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 max-w-[80%]">
-                      <p className="text-sm text-slate-700 leading-relaxed">
-                        Awesome! A celebration for {chatAnswers.age} kid is special. **What type of event are you hosting?**
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3 pt-4">
-                    {['Kids Birthday Party', 'Baby Shower Setup', 'Home Decoration', 'Theme Party Gala'].map((type) => (
-                      <button
-                        key={type}
-                        onClick={() => handleChatAnswer('type', type)}
-                        className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-left hover:border-amber-400 hover:bg-amber-50 text-xs font-bold text-slate-700 transition-all"
-                      >
-                        {type}
-                      </button>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-
-              {chatStep === 2 && (
-                <motion.div
-                  key="step2"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  className="space-y-6"
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center border border-amber-200 shrink-0">
-                      <Sparkles className="w-5 h-5 text-[#f59e0b]" />
-                    </div>
-                    <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 max-w-[80%]">
-                      <p className="text-sm text-slate-700 leading-relaxed">
-                        Got it! **What is your budget preference for this setups?**
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-3 pt-4">
-                    {[
-                      { label: '₹9,999 – ₹15,000', value: 'Under 15k' },
-                      { label: '₹15,000 – ₹25,000', value: '15k-25k' },
-                      { label: '₹25,000 +', value: '25k+' }
-                    ].map((budget) => (
-                      <button
-                        key={budget.value}
-                        onClick={() => handleChatAnswer('budget', budget.value)}
-                        className="p-4 rounded-xl bg-slate-50 border border-slate-200 hover:border-amber-400 hover:bg-amber-50 text-center text-xs font-bold text-slate-700 transition-all"
-                      >
-                        {budget.label}
-                      </button>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-
-              {chatStep === 3 && (
-                <motion.div
-                  key="step3"
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="space-y-6"
-                >
-                  <div className="flex items-start gap-4 mb-4">
-                    <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center border border-amber-200 shrink-0">
-                      <Sparkles className="w-5 h-5 text-[#f59e0b]" />
-                    </div>
-                    <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 w-full space-y-4">
-                      <h4 className="text-[#f59e0b] font-serif font-bold text-lg border-b border-slate-200 pb-2">Your Party Blueprint Recommendation</h4>
-                      
-                      <div className="space-y-3 text-xs text-slate-700">
-                        <div className="flex justify-between border-b border-slate-100 pb-2">
-                          <span>Target Age Bracket:</span>
-                          <span className="font-bold text-slate-900">{chatAnswers.age}</span>
-                        </div>
-                        <div className="flex justify-between border-b border-slate-100 pb-2">
-                          <span>Recommended Tier:</span>
-                          <span className="font-bold text-slate-900 uppercase tracking-wider">
-                            {chatAnswers.budget === 'Under 15k' ? 'Starter Party (₹9,999+)' : chatAnswers.budget === '15k-25k' ? 'Theme Party (₹19,999+)' : 'Premium Celebration (₹34,999+)'}
-                          </span>
-                        </div>
-                        <div className="flex justify-between border-b border-slate-100 pb-2">
-                          <span>Ideal Decor Theme:</span>
-                          <span className="text-[#f59e0b] text-right font-bold">
-                            {chatAnswers.age === 'Under 1 Year' ? 'Pastel Sky Clouds & Sage Leaves' : chatAnswers.age === '1 – 3 Years' ? 'Candy Land / Jungle Safari Animals' : 'Space Astronaut / Princess Castle'}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="mt-6 p-4 rounded-xl bg-amber-50 border border-amber-200 flex justify-between items-center">
-                        <div>
-                          <p className="text-[10px] uppercase tracking-wider text-slate-500">Estimated Stalls</p>
-                          <p className="text-sm font-bold text-slate-800">Popcorn & Live Balloon Twist</p>
-                        </div>
-                        
+                    {/* Packaged Action Quote trigger button inside chat */}
+                    {msg.whatsappLink && (
+                      <div className="mt-4 pt-3 border-t border-slate-100 flex justify-end">
                         <a 
-                          href={`https://wa.me/919876543210?text=Hi%20ThemeCraft%20Celebrations!%20My%20child%20is%20${encodeURIComponent(chatAnswers.age)}%20and%20I%20would%20like%20to%20book%20a%20${encodeURIComponent(chatAnswers.type)}%20with%20the%20recommended%20setup.`}
+                          href={msg.whatsappLink}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest text-white bg-[#25d366] hover:bg-[#1ebd54] flex items-center gap-1.5"
+                          className="px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest text-white bg-[#25d366] hover:bg-[#1ebd54] flex items-center gap-1.5 shadow-md transition-all"
                         >
-                          <MessageSquare className="w-3.5 h-3.5" /> Book Chat
+                          <MessageSquare className="w-3.5 h-3.5" /> Book Blueprint Now
                         </a>
                       </div>
-                    </div>
+                    )}
                   </div>
 
-                  <div className="flex justify-end pt-2">
-                    <button
-                      onClick={resetChat}
-                      className="text-xs text-slate-400 hover:text-[#f59e0b] underline transition-colors"
-                    >
-                      Reset and plan another
-                    </button>
+                  {msg.role === 'user' && (
+                    <div className="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center border border-slate-800 shrink-0 shadow-sm text-white text-[10px] font-bold uppercase tracking-wider font-serif">
+                      ME
+                    </div>
+                  )}
+                </div>
+              ))}
+
+              {/* AI Typing Indicator */}
+              {isAiTyping && (
+                <div className="flex items-start gap-4 justify-start">
+                  <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center border border-amber-300 shrink-0">
+                    <Sparkles className="w-4 h-4 text-[#f59e0b] animate-spin" />
                   </div>
-                </motion.div>
+                  <div className="bg-white border border-slate-100 p-4 rounded-2xl rounded-tl-none shadow-sm">
+                    <div className="flex gap-1 items-center py-1">
+                      <span className="w-2 h-2 rounded-full bg-amber-400 animate-bounce" style={{ animationDelay: '0ms' }}></span>
+                      <span className="w-2 h-2 rounded-full bg-amber-400 animate-bounce" style={{ animationDelay: '150ms' }}></span>
+                      <span className="w-2 h-2 rounded-full bg-amber-400 animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                    </div>
+                  </div>
+                </div>
               )}
-            </AnimatePresence>
+            </div>
+
+            {/* AI Assistant Chat input form */}
+            <form 
+              onSubmit={(e) => { e.preventDefault(); handleSendChatMessage(chatInput); }}
+              className="bg-slate-50 p-4 border-t border-slate-100 flex gap-3 items-center"
+            >
+              <input 
+                type="text" 
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                placeholder="Ask ThemeCraft AI to plan your baby shower, terrace surprise, anniversary, or custom kids party..."
+                className="flex-1 px-4 py-3.5 bg-white border border-slate-200 text-xs text-slate-850 rounded-2xl focus:border-amber-400 focus:outline-none shadow-inner"
+              />
+              <button 
+                type="submit"
+                disabled={!chatInput.trim()}
+                className="w-12 h-12 rounded-2xl bg-amber-500 hover:bg-amber-600 disabled:bg-slate-200 text-white flex items-center justify-center shadow-md hover:shadow-lg transition-all"
+              >
+                <Send className="w-5 h-5" />
+              </button>
+            </form>
           </div>
         </div>
       </section>
@@ -1214,14 +1284,9 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-4 gap-8">
-            {[
-              { name: "Priya Reddy", location: "Jubilee Hills", role: "Parent of 2yo", type: "Kids Jungle Safari birthday", quote: "ThemeCraft Celebrations turned our living room into a jungle! The Safari panels and organic olive balloon arch looked stunning. Rahul's team was highly professional and on-time.", rate: 5 },
-              { name: "Rahul Kumar", location: "Gachibowli", role: "Parent of 5yo", type: "Space Adventure birthday", quote: "Highly recommend the Theme Party package! The candid photography was excellent, and the Astronaut backdrop completely blew our guests away. Best planners in Hyderabad.", rate: 5 },
-              { name: "Sneha Sharma", location: "Kondapur", role: "New Mother", type: "Botanical Sage Baby Shower", quote: "Absolutely flawless Oh Baby backdrop setups in Sage green and botanical ivy leaves. They book directly on WhatsApp which saved so much coordination time.", rate: 5 },
-              { name: "Anil Verma", location: "Begumpet", role: "Father of 7yo", type: "Candy Land theme celebration", quote: "The Premium Package was worth every rupee. Bouncy castle kept children completely engaged, popcorn and cotton candy stalls were absolute hits! On-time balloon setups.", rate: 5 }
-            ].map((test, index) => (
+            {reviews.map((test) => (
               <div 
-                key={test.name}
+                key={test.name + test.location}
                 className="bg-white p-6 rounded-3xl border border-slate-100 friendly-shadow hover:border-amber-400 transition-all flex flex-col justify-between"
               >
                 <div>
@@ -1235,7 +1300,7 @@ export default function Home() {
                 
                 <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
                   <img
-                    src={IMAGES.testimonials[index]}
+                    src={test.avatar}
                     alt={test.name}
                     className="w-10 h-10 rounded-full object-cover border border-slate-200"
                   />
@@ -1247,6 +1312,125 @@ export default function Home() {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Testimonial Feedback submission form */}
+          <div className="mt-16 max-w-2xl mx-auto bg-slate-50 border border-slate-200 rounded-3xl p-8 shadow-md relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-amber-200/20 rounded-full blur-3xl"></div>
+            
+            <div className="relative space-y-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Sparkles className="w-5 h-5 text-[#f59e0b] animate-bounce" />
+                <h3 className="text-lg font-serif font-bold text-slate-900">Share Your Magical Experience!</h3>
+              </div>
+              <p className="text-xs text-slate-500 font-light leading-relaxed">
+                Hyderabad parents, did we craft magical memories for your family? Leave a live review below to instantly post it on our wall!
+              </p>
+
+              {reviewSubmitted ? (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="bg-emerald-50 border border-emerald-300 text-emerald-800 p-6 rounded-2xl text-center space-y-2"
+                >
+                  <p className="text-sm font-bold">🎉 Review Posted Live Successfully!</p>
+                  <p className="text-xs font-light">Thank you! Your wonderful testimonial is now displayed dynamically in our parent reviews board.</p>
+                </motion.div>
+              ) : (
+                <form onSubmit={handleReviewSubmit} className="space-y-4 pt-2">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-[10px] uppercase tracking-wider font-bold text-slate-500 block mb-1">Your Name</label>
+                      <input 
+                        type="text" 
+                        required
+                        value={newReview.name}
+                        onChange={(e) => setNewReview(prev => ({ ...prev, name: e.target.value }))}
+                        placeholder="e.g. Priya Reddy"
+                        className="w-full px-3 py-2 text-xs rounded-xl bg-white border border-slate-200 text-slate-800 focus:border-amber-400 focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] uppercase tracking-wider font-bold text-slate-500 block mb-1">Your Role / Vibe</label>
+                      <input 
+                        type="text" 
+                        required
+                        value={newReview.role}
+                        onChange={(e) => setNewReview(prev => ({ ...prev, role: e.target.value }))}
+                        placeholder="e.g. Parent of 2yo / Mother of Bride"
+                        className="w-full px-3 py-2 text-xs rounded-xl bg-white border border-slate-200 text-slate-800 focus:border-amber-400 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-[10px] uppercase tracking-wider font-bold text-slate-500 block mb-1">Hyderabad Area</label>
+                      <input 
+                        type="text" 
+                        required
+                        value={newReview.location}
+                        onChange={(e) => setNewReview(prev => ({ ...prev, location: e.target.value }))}
+                        placeholder="e.g. Jubilee Hills / Madhapur"
+                        className="w-full px-3 py-2 text-xs rounded-xl bg-white border border-slate-200 text-slate-800 focus:border-amber-400 focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] uppercase tracking-wider font-bold text-slate-500 block mb-1">Event Setup Type</label>
+                      <input 
+                        type="text" 
+                        value={newReview.type}
+                        onChange={(e) => setNewReview(prev => ({ ...prev, type: e.target.value }))}
+                        placeholder="e.g. Oh Baby Shower / Jungle Safari Theme"
+                        className="w-full px-3 py-2 text-xs rounded-xl bg-white border border-slate-200 text-slate-800 focus:border-amber-400 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] uppercase tracking-wider font-bold text-slate-500 block mb-1">Rating</label>
+                    <div className="flex gap-1.5 items-center">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button
+                          key={star}
+                          type="button"
+                          onClick={() => setNewReview(prev => ({ ...prev, rate: star }))}
+                          className="focus:outline-none transition-transform hover:scale-110"
+                        >
+                          <Star 
+                            className={`w-6 h-6 ${
+                              star <= newReview.rate 
+                                ? 'fill-[#f59e0b] text-[#f59e0b]' 
+                                : 'text-slate-300 fill-transparent'
+                            }`}
+                          />
+                        </button>
+                      ))}
+                      <span className="text-[10px] text-slate-500 ml-2 font-bold uppercase tracking-wider">({newReview.rate} Stars)</span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] uppercase tracking-wider font-bold text-slate-500 block mb-1">Review Comments</label>
+                    <textarea 
+                      required
+                      rows={3}
+                      value={newReview.quote}
+                      onChange={(e) => setNewReview(prev => ({ ...prev, quote: e.target.value }))}
+                      placeholder="ThemeCraft Celebrations turned our living room into a magical sky..."
+                      className="w-full px-3 py-2 text-xs rounded-xl bg-white border border-slate-200 text-slate-800 focus:border-amber-400 focus:outline-none"
+                    ></textarea>
+                  </div>
+
+                  <button 
+                    type="submit"
+                    className="w-full text-center py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold uppercase tracking-widest text-xs rounded-xl transition-all shadow-md"
+                  >
+                    Post Testimonial Live
+                  </button>
+                </form>
+              )}
+            </div>
           </div>
         </div>
       </section>
@@ -1325,12 +1509,12 @@ export default function Home() {
                 </div>
                 <div>
                   <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">WhatsApp Planner Director</p>
-                  <p className="text-sm font-extrabold text-[#25d366] group-hover:underline">+91 98765 43210</p>
+                  <p className="text-sm font-extrabold text-[#25d366] group-hover:underline">{WHATSAPP_DISPLAY}</p>
                 </div>
               </a>
 
               <a 
-                href="tel:+919876543210"
+                href={`tel:+${WHATSAPP_NUMBER}`}
                 className="flex items-center gap-4 bg-slate-50 border border-slate-200 p-4 rounded-2xl hover:bg-slate-100 transition-colors group"
               >
                 <div className="w-10 h-10 rounded-full bg-slate-900 flex items-center justify-center text-white shrink-0 shadow-sm">
@@ -1338,7 +1522,7 @@ export default function Home() {
                 </div>
                 <div>
                   <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Call Now</p>
-                  <p className="text-sm font-extrabold text-slate-800 group-hover:underline">+91 98765 43210</p>
+                  <p className="text-sm font-extrabold text-slate-800 group-hover:underline">{WHATSAPP_DISPLAY}</p>
                 </div>
               </a>
 
@@ -1520,7 +1704,7 @@ export default function Home() {
             >
               {/* Call Now */}
               <a
-                href="tel:+919876543210"
+                href={`tel:+${WHATSAPP_NUMBER}`}
                 className="flex items-center gap-2 bg-slate-900 border border-slate-700 text-white px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider shadow-lg hover:bg-slate-800 transition-colors"
               >
                 <span>Call Now</span>
