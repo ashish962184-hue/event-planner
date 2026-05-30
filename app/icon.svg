@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <!-- Diamond border -->
+  <path d="M50 5 L95 50 L50 95 L5 50 Z" stroke="#d4af37" stroke-width="4" />
+  <!-- Interlocking VC -->
+  <path d="M28 35 L45 70 L51 70 L57 58" stroke="#d4af37" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M68 38 C64 32, 52 30, 46 38 C40 46, 42 58, 48 64 C54 70, 64 68, 68 62" stroke="#d4af37" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M50 46 L52 50 L56 50 L53 52 L54 56 L50 53 L46 56 L47 52 L44 50 L48 50 Z" fill="#d4af37" />
+</svg>
